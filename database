@@ -1,0 +1,650 @@
+How Queries Happen
+https://youtu.be/v3EkXogyIL4
+
+
+Related Tables
+https://youtu.be/lMwSjDYgCq0
+
+
+Uniqueness and Keys
+
+Primary Key
+
+Joining Tables
+https://youtu.be/lXoiI0gx3MU
+
+
+
+
+
+
+Elements of SQL
+Every select query in SQL returns a table. In this case, it's a table with the names and birthdates of all the gorillas in the zoo.
+In this course, table output will be displayed like this, in a little text-based grid.
+The table header is on top — the names of the columns — and underneath it are the rows of result data.
+
+Try changing the order of the columns from name, birthdate to birthdate, name in the query, and running it again.
+Question 2 of 2
+
+What happens if you put * instead of the column names? For instance, select * from animals where species = 'iguana';
+
+    The database returns one row for each iguana, including all the columns.
+
+
+
+Types in the SQL World
+https://youtu.be/8swA-PqlEP0
+
+Just a few SQL types
+Here's just a sampling of the many data types that SQL supports. We won't be using most of these types in this course, though.
+
+The exact list of types differs from one database to another. For a full list of types, check the manual for your database, such as this one for PostgreSQL.
+Text and string types
+
+text — a string of any length, like Python str or unicode types.
+char(n) — a string of exactly n characters.
+varchar(n) — a string of up to n characters.
+Numeric types
+
+integer — an integer value, like Python int.
+real — a floating-point value, like Python float. Accurate up to six decimal places.
+double precision — a higher-precision floating-point value. Accurate up to 15 decimal places.
+decimal — an exact decimal value.
+Date and time types
+
+date — a calendar date; including year, month, and day.
+time — a time of day.
+timestamp — a date and time together.
+
+
+
+Select Where
+https://youtu.be/GUD6yl0A1Aw
+
+-- The query below finds the names and birthdates of all the gorillas.
+--
+-- Modify it to make it find the names of all the animals that are not
+-- gorillas and not named 'Max'.
+--
+
+select name from animals where species != 'gorilla' and name != 'Max';
+
+
+
+
+Comparison Operators
+-- Find all the llamas born between January 1, 1995 and December 31, 1998.
+-- Fill in the 'where' clause in this query.
+
+select * from animals where  (birthdate >= 1995 and birthdate <= 1998) and species = 'llama';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+The One Thing SQL is Terrible At
+Reference
+
+For reference, here's a list of all the tables in the zoo database:
+
+animals
+This table lists individual animals in the zoo. Each animal has only one row. There may be multiple animals with the same name, or even multiple animals with the same name and species.
+
+    name — the animal's name (example: 'George')
+    species — the animal's species (example: 'gorilla')
+    birthdate — the animal's date of birth (example: '1998-05-18')
+
+diet
+This table matches up species with the foods they eat. Every species in the zoo eats at least one sort of food, and many eat more than one. If a species eats more than one food, there will be more than one row for that species.
+
+    species — the name of a species (example: 'hyena')
+    food — the name of a food that species eats (example: 'meat')
+
+taxonomy
+This table gives the (partial) biological taxonomic names for each species in the zoo. It can be used to find which species are more closely related to each other evolutionarily.
+
+    name — the common name of the species (e.g. 'jackal')
+    species — the taxonomic species name (e.g. 'aureus')
+    genus — the taxonomic genus name (e.g. 'Canis')
+    family — the taxonomic family name (e.g. 'Canidae')
+    t_order — the taxonomic order name (e.g. 'Carnivora')
+
+If you've never heard of this classification, don't worry about it; the details won't be necessary for this course. But if you're curious, Wikipedia articles Taxonomy and Biological classification may help.
+
+ordernames
+This table gives the common names for each of the taxonomic orders in the taxonomy table.
+
+    t_order — the taxonomic order name (e.g. 'Cetacea')
+    name — the common name (e.g. 'whales and dolphins')
+
+The SQL for it
+
+And here are the SQL commands that were used to create those tables.
+We won't cover the create table command until lesson 4, but it may be interesting to look at:
+
+create table animals (
+       name text,
+       species text,
+       birthdate date);
+
+create table diet (
+       species text,
+       food text);
+
+create table taxonomy (
+       name text,
+       species text,
+       genus text,
+       family text,
+       t_order text);
+
+create table ordernames (
+       t_order text,
+       name text);
+
+Remember: In SQL, we always put string and date values inside single quotes.
+
+
+
+Select Clauses
+
+Here are the new select clauses introduced in the previous video:
+
+... limit count
+Return just the first count rows of the result table.
+
+... limit count offset skip
+Return count rows starting after the first skip rows.
+
+... order by columns
+... order by columns desc
+Sort the rows using the columns (one or more, separated by commas) as the sort key. Numerical columns will be sorted in numerical order; string columns in alphabetical order. With desc, the order is reversed (desc-ending order).
+
+... group by columns
+Change the behavior of aggregations such as max, count, and sum. With group by, the aggregation will return one row for each distinct value in columns.
+
+https://classroom.udacity.com/courses/ud197/lessons/3423258756/concepts/33885287060923
+
+
+
+
+
+
+
+
+
+
+
+
+
+The Experiment Page
+
+-- Uncomment one of these queries and use "Test Run" to run it.
+-- You'll see the results below.  Then try your own queries as well!
+
+-- select max(name) from animals;
+
+-- select * from animals limit 10;
+
+-- select * from animals where species = 'orangutan' order by birthdate;
+
+-- select name from animals where species = 'orangutan' order by birthdate desc;
+
+-- select name, birthdate from animals order by name limit 10 offset 20;
+
+-- select species, min(birthdate) from animals group by species;
+
+-- select name, count(*) as num from animals
+-- group by name
+-- order by num desc
+-- limit 5;
+
+
+
+
+
+Select clauses
+These are all the select clauses we've seen in the lesson so far.
+
+where
+The where clause expresses restrictions — filtering a table for rows that follow a particular rule. where supports equalities, inequalities, and boolean operators (among other things):
+
+    where species = 'gorilla' — return only rows that have 'gorilla' as the value of the species column.
+
+    where name >= 'George' — return only rows where the name column is alphabetically after 'George'.
+
+    where species != 'gorilla' and name != 'George' — return only rows where species isn't 'gorilla' and name isn't 'George'.
+
+limit / offset
+The limit clause sets a limit on how many rows to return in the result table. The optional offset clause says how far to skip ahead into the results. So limit 10 offset 100 will return 10 results starting with the 101st.
+
+order by
+The order by clause tells the database how to sort the results — usually according to one or more columns. So order by species, name says to sort results first by the species column, then by name within each species.
+
+Ordering happens before limit/offset, so you can use them together to extract pages of alphabetized results. (Think of the pages of a dictionary.)
+
+The optional desc modifier tells the database to order results in descending order — for instance from large numbers to small ones, or from Z to A.
+
+group by
+The group by clause is only used with aggregations, such as max or sum. Without a group by clause, a select statement with an aggregation will aggregate over the whole selected table(s), returning only one row. With a group by clause, it will return one row for each distinct value of the column or expression in the group by clause.
+
+
+
+-- Write a query that returns all the species in the zoo, and how many
+-- animals of each species there are, sorted with the most populous
+-- species at the top.
+--
+-- The result should have two columns:  species and number.
+--
+-- The animals table has columns (name, species, birthdate) for each animal.
+
+-- select * from animals;
+
+select count(*) as num, species from animals group by species order by num desc;
+
+
+#
+# Insert a newborn baby opossum into the animals table and verify that it's
+# been added. To do this, fill in the rest of SELECT_QUERY and INSERT_QUERY.
+#
+# SELECT_QUERY should find the names and birthdates of all opossums.
+#
+# INSERT_QUERY should add a new opossum to the table, whose birthdate is today.
+# (Or you can choose any other date you like.)
+#
+# The animals table has columns (name, species, birthdate) for each individual.
+#
+
+SELECT_QUERY = "select name, birthdate from animals where species = 'opossum';"
+
+INSERT_QUERY = "insert into animals (name, species, birthdate) values ('Bob', 'opossum', '2017-03-09');"
+
+
+Insert: Adding Rows
+
+The basic syntax for the insert statement:
+
+insert into table ( column1, column2, ... ) values ( val1, val2, ... );
+
+If the values are in the same order as the table's columns (starting with the first column), you don't have to specify the columns in the insert statement:
+
+insert into table values ( val1, val2, ... );
+
+For instance, if a table has three columns (a, b, c) and you want to insert into a and b, you can leave off the column names from the insert statement. But if you want to insert into b and c, or a and c, you have to specify the columns.
+
+A single insert statement can only insert into a single table. (Contrast this with the select statement, which can pull data from several tables using a join.)
+
+
+
+
+
+
+-- Find the names of the individual animals that eat fish.
+--
+-- The animals table has columns (name, species, birthdate) for each individual.
+-- The diet table has columns (species, food) for each food that a species eats.
+
+select animals.name from animals, diet where diet.food='fish' and animals.species = diet.species;
+
+
+
+
+
+-- Find the one food that is eaten by only one animal.
+--
+-- The animals table has columns (name, species, birthdate) for each
+-- individual.
+-- The diet table has columns (species, food) for each food that a
+-- species eats.
+
+select food, count(*) as num from animals, diet on animals.species = diet.species group by food
+    having num = 1;
+
+
+
+
+
+    WHERE is a part of the SELECT query as a whole, ON is a part of each individual join.
+
+    ON can only refer to the fields of previously used tables.
+
+    When there is no actual match against a record in the left table, LEFT JOIN returns one record from the right table with all fields set to NULLS. WHERE clause then evaluates and filter this.
+
+    In your query, only the records from gifts without match in 'sentgifts' are returned.
+
+    Here's the example
+
+    gifts
+
+    1   Teddy bear
+    2   Flowers
+
+    sentgifts
+
+    1   Alice
+    1   Bob
+
+    ---
+    SELECT  *
+    FROM    gifts g
+    LEFT JOIN
+            sentgifts sg
+    ON      g.giftID = sg.giftID
+
+    ---
+
+    1  Teddy bear   1     Alice
+    1  Teddy bear   1     Bob
+    2  Flowers      NULL  NULL    -- no match in sentgifts
+
+    ---
+    SELECT  *
+    FROM    gifts g
+    LEFT JOIN
+            sentgifts sg
+    ON      g.giftID = sg.giftID
+    WHERE   sg.giftID IS NULL
+
+    ---
+
+    2  Flowers      NULL  NULL    -- no match in sentgifts
+
+    As you can see, no actual match can leave a NULL in sentgifts.id, so only the gifts that had not ever been sent are returned.
+
+
+
+
+
+
+
+
+    Tables introduced in this video
+
+    taxonomy
+    This table gives the (partial) biological taxonomic names for each species in the zoo. It can be used to find which species are more closely related to each other evolutionarily.
+
+        name — the common name of the species (e.g. 'jackal')
+        species — the taxonomic species name (e.g. 'aureus')
+        genus — the taxonomic genus name (e.g. 'Canis')
+        family — the taxonomic family name (e.g. 'Canidae')
+        t_order — the taxonomic order name (e.g. 'Carnivora')
+
+    If you've never heard of this classification, don't worry about it; the details won't be necessary for this course. But if you're curious, Wikipedia articles Taxonomy and Biological classification may help.
+
+    ordernames
+    This table gives the common names for each of the taxonomic orders in the taxonomy table.
+
+        t_order — the taxonomic order name (e.g. 'Cetacea')
+        name — the common name (e.g. 'whales and dolphins')
+
+    All the tables in the zoo database
+    If you don't know what the contents of a table look like, you can always view all of it with select * from table. But here's a summary of what all the tables in the zoo database contain:
+
+    animals
+    This table lists individual animals in the zoo. Each animal has only one row. There may be multiple animals with the same name, or even multiple animals with the same name and species.
+
+        name — the animal's name (example: 'George')
+
+        species — the animal's species (example: 'gorilla')
+
+        birthdate — the animal's date of birth (example: '1998-05-18')
+
+    diet
+    This table matches up species with the foods they eat. Every species in the zoo eats at least one sort of food, and many eat more than one. If a species eats more than one food, there will be more than one row for that species.
+
+        species — the name of a species (example: 'hyena')
+
+        food — the name of a food that species eats (example: 'meat')
+
+    The SQL for it
+    And here are the SQL commands that were used to create those tables. We won't cover the create table command until lesson 4, but it may be interesting to look at:
+
+    create table animals (
+           name text,
+           species text,
+           birthdate date);
+    create table diet (
+           species text,
+           food text);
+    create table taxonomy (
+           name text,
+           species text,
+           genus text,
+           family text,
+           t_order text);
+
+    create table ordernames (
+           t_order text,
+           name text);
+
+    -- List all the taxonomic orders, using their common names, sorted by the
+    -- number of animals of that order that the zoo has.
+    --
+    -- The animals table has (name, species, birthdate) for each individual.
+    -- The taxonomy table has (name, species, genus, family, t_order) for each species.
+    -- The ordernames table has (t_order, name) for each order.
+    --
+    -- Be careful:  Each of these tables has a column "name", but they don't
+    -- have the same meaning!  animals.name is an animal's individual name.
+    -- taxonomy.name is a species' common name (like 'brown bear').
+    -- And ordernames.name is the common name of an order (like 'Carnivores').
+
+    select ...
+
+    Solutions:
+
+    Here's one possible solution:
+
+    select ordernames.name, count(*) as num
+      from animals, taxonomy, ordernames
+      where animals.species = taxonomy.name
+        and taxonomy.t_order = ordernames.t_order
+      group by ordernames.name
+      order by num desc
+
+    And here's another, this time using the explicit join style:
+
+    select ordernames.name, count(*) as num
+      from (animals join taxonomy
+                    on animals.species = taxonomy.name)
+                    as ani_tax
+            join ordernames
+                 on ani_tax.t_order = ordernames.t_order
+      group by ordernames.name
+      order by num desc
+
+    I think the upper version is much more readable than the lower one, because in the explicit join style you have to explicitly tell the database what order to join the tables in — ((a join b) join c) — instead of just letting the database worry about that.
+
+    If you're using a more barebones database (like SQLite) there can be a performance benefit to the explicit join style. But in PostgreSQL, the more server-oriented database system we'll be using next lesson, the query planner should optimize away any difference.
+
+
+
+
+
+
+    Reference — Elements of SQL
+
+    This is a reference for the material covered in the "Elements of SQL" lesson.
+    SQL Data Types
+
+    Here's just a sampling of the many data types that SQL supports. We won't be using most of these types in this course, though. The exact list of types differs from one database to another. For a full list of types, check the manual for your database, such as this one for PostgreSQL.
+    Text and string types
+
+    text — a string of any length, like Python str or unicode types.
+    char(n) — a string of exactly n characters.
+    varchar(n) — a string of up to n characters.
+    Numeric types
+
+    integer — an integer value, like Python int.
+    real — a floating-point value, like Python float. Accurate up to six decimal places.
+    double precision — a higher-precision floating-point value. Accurate up to 15 decimal places.
+    decimal — an exact decimal value.
+    Date and time types
+
+    date — a calendar date; including year, month, and day.
+    time — a time of day.
+    timestamp — a date and time together.
+    timestamp with time zone — a timestamp that carries time zone information.
+
+    The type timestamp with time zone can be abbreviated to timestamptz in PostgreSQL.
+    Select statement
+
+    The most basic form of the select statement is to select a single scalar value:
+
+    select 2 + 2 ;
+
+    More usefully, we can select one or more columns from a table. With no restrictions, this will return all rows in the table:
+
+    select name, species from animals ;
+
+    Columns are separated by commas; use * to select all columns from the tables:
+
+    select * from animals;
+
+    Quite often, we don't want all the data from a table. We can restrict the rows using a variety of select clauses, listed below. There are also a wide variety of functions that can apply to columns; including aggregation functions that operate on values from several rows, such as max and count.
+    where
+
+    The where clause expresses restrictions — filtering a table for rows that follow a particular rule. where supports equalities, inequalities, and boolean operators (among other things):
+
+    where species = 'gorilla' — return only rows that have 'gorilla' as the value of the species column.
+    where name >= 'George' — return only rows where the name column is alphabetically after 'George'.
+    where species != 'gorilla' and name != 'George' — return only rows where species isn't 'gorilla' and name isn't 'George'.
+    limit / offset
+
+    The limit clause sets a limit on how many rows to return in the result table. The optional offset clause says how far to skip ahead into the results. So limit 10 offset 100 will return 10 results starting with the 101st.
+    order by
+
+    The order by clause tells the database how to sort the results — usually according to one or more columns. So order by species, name says to sort results first by the species column, then by name within each species.
+
+    Ordering happens before limit/offset, so you can use them together to extract pages of alphabetized results. (Think of the pages of a dictionary.)
+
+    The optional desc modifier tells the database to order results in descending order — for instance from large numbers to small ones, or from Z to A.
+    group by
+
+    The group by clause is only used with aggregations, such as max or sum. Without a group by clause, a select statement with an aggregation will aggregate over the whole selected table(s), returning only one row. With a group by clause, it will return one row for each distinct value of the column or expression in the group by clause.
+    having
+
+    The having clause works like the where clause, but it applies after group by aggregations take place. Here's an example:
+
+    select col1, sum(col2) as total
+        from table
+        group by col1
+        having total > 500 ;
+
+    Usually, at least one of the columns will be an aggregate function such as count, max, or sum on one of the tables' columns. In order to apply having to an aggregated column, you'll want to give it a name using as.
+
+    For instance, if you had a table of items sold in a store, and you wanted to find all the items that have sold more than five units, you could use:
+
+    select name, count(*) as num from sales having num > 5;
+
+    You can have a select statement that uses only where, or only group by, or group by and having, or where and group by, or all three of them! But it doesn't usually make sense to use having without group by.
+
+    If you use both where and having, the where condition will filter the rows that are going into the aggregation, and the having condition will filter the rows that come out of it.
+
+    You can read more about having here: http://www.postgresql.org/docs/9.4/static/sql-select.html#SQL-HAVING
+    All the tables in the zoo database
+
+    A database of zoo animals is used as an example in many of the code exercises in this course. Here's a list of all the tables available in it, and what the columns in each table refer to —
+    animals
+
+    This table lists individual animals in the zoo. Each animal has only one row. There may be multiple animals with the same name, or even multiple animals with the same name and species.
+
+    name — the animal's name (example: 'George')
+    species — the animal's species (example: 'gorilla')
+    birthdate — the animal's date of birth (example: '1998-05-18')
+    diet
+
+    This table matches up species with the foods they eat. Every species in the zoo eats at least one sort of food, and many eat more than one.
+
+    species — the name of a species (example: 'hyena')
+    food — the name of a food that species eats (example: 'meat')
+
+    The diet table shows an example of the important database concept of normalization. If a species eats more than one food, there will be more than one row for that species. We do this instead of having multiple food columns (or storing a list in a single column), both of which would make select statements impractical.
+    taxonomy
+
+    This table gives the (partial) biological taxonomic names for each species in the zoo. It can be used to find which species are more closely related to each other evolutionarily.
+
+    name — the common name of the species (e.g. 'jackal')
+    species — the taxonomic species name (e.g. 'aureus')
+    genus — the taxonomic genus name (e.g. 'Canis')
+    family — the taxonomic family name (e.g. 'Canidae')
+    t_order — the taxonomic order name (e.g. 'Carnivora')
+
+    If you've never heard of this classification, don't worry about it; the details won't be necessary for this course. But if you're curious, the Wikipedia article Taxonomy (biology)) may help.
+
+    The t_order column is not called order because "order" is a reserved keyword in SQL.
+    ordernames
+
+    This table gives the common names for each of the taxonomic orders in the taxonomy table.
+
+    t_order — the taxonomic order name (e.g. 'Cetacea')
+    name — the common name (e.g. 'whales and dolphins')
+    Insert statement
+
+    The basic syntax for the insert statement:
+
+    insert into tablename ( col1, col2, ... ) values ( val1, val2, ... );
+
+    If the values are in the same order as the table's columns (starting with the first column), you don't have to specify the columns in the insert statement:
+
+    insert into tablename values ( val1, val2, ... );
+
+    For instance, if a table has three columns (a, b, c) and you want to insert into a and b, you can leave off the column names from the insert statement. But if you want to insert into b and c, or a and c, you have to specify the columns.
+
+    Normally, a single insert statement can only insert into a single table. (Contrast this with the select statement, which can pull data from several tables using a join.)
+
+
+
+
+    Writing Code with DB API
+    https://youtu.be/Zd0PAgb6vY4
+    The connect function for PostgreSQL uses a different argument syntax from the one for SQLite. When you want to connect to a database called, say, bears, you'll use psycopg2.connect("dbname=bears").
+
+
+    Trying out DB API
+    # To see how the various functions in the DB-API work, take a look at this code,
+    # then the results that it prints when you press "Test Run".
+    #
+    # Then modify this code so that the student records are fetched in sorted order
+    # by student's name.
+    #
+
+    import sqlite3
+
+    # Fetch some student records from the database.
+    db = sqlite3.connect("students")
+    c = db.cursor()
+    query = "select name, id from students ORDER BY name;"
+    c.execute(query)
+    rows = c.fetchall()
+
+    # First, what data structure did we get?
+    print "Row data:"
+    print rows
+
+    # And let's loop over it too:
+    print
+    print "Student names:"
+    for row in rows:
+      print "  ", row[0]
+
+    db.close()
