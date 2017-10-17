@@ -1,0 +1,24 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+		<div class = 'pane'>
+		<h1>{{ catalog.name }}</h1>
+		{%if 'username' in session %}
+					<a href = "{{url_for('newItem', catalog_name = catalog.name )}}">Create New Item</a>
+		{% endif %}
+
+		{% for i in items %}
+
+		<a href = "{{url_for('showDes', catalog_name = i.catalog.name, item_name= i.name)}}"> <p>{{i.name}}</p></a>
+
+
+
+
+		{% endfor %}
+
+		</div>
+
+	</body>
+
+</html>
+{% endblock %}

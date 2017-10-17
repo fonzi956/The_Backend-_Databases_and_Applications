@@ -1,0 +1,17 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+		<div class = 'pane'>
+		<h1>{{ item.name }}</h1>
+
+		<p>{{item.description}}</p>
+
+		<a href="{{url_for('editItem', catalog_name = item.catalog.name, item_name= item.name)}}" >Edit</a>
+		</br>
+		<a href="{{url_for('deleteItem', catalog_name = item.catalog.name, item_name= item.name)}}" >Delete</a>
+		
+
+	</body>
+
+</html>
+{% endblock %}

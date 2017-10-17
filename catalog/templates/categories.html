@@ -1,0 +1,28 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+<div class = 'pane'>
+<h1>categories</h1>
+
+{% for catalog in categories %}
+
+<a href = "{{url_for('showItem', catalog_name = catalog.name)}}"> <p>{{catalog.name}}</p></a>
+
+{% endfor %}
+
+</div>
+<div class = 'pane-right'>
+<h1>Items</h1>
+
+
+{% for it in item %}
+
+<a href = "{{url_for('showDes', catalog_name = it.catalog.name, item_name= it.name)}}"> <p>{{it.name}} ({{it.catalog.name}})</p></a>
+
+
+{% endfor %}
+</div>
+
+<br><br><br>
+
+{% endblock %}
